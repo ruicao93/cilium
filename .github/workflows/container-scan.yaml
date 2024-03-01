@@ -4,7 +4,8 @@ on:
     - cron: "0 4 * * *"
   workflow_dispatch:
 
-permissions: read-all
+permissions:
+  contents: read
 
 jobs:
   container-scan:
@@ -48,4 +49,5 @@ jobs:
         with:
           image: ${{ matrix.image.name }}:${{ matrix.branch }}
           output-format: table
-          severity-cutoff: critical
+          severity-cutoff: high
+          vex: .openvex.json
