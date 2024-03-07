@@ -402,10 +402,32 @@ spec:
                   cidr-block:
                     description: CIDRBlock is VPC IPv4 CIDR
                     type: string
+                  eni-tags:
+                    additionalProperties:
+                      type: string
+                    description: ENITags is the list of tags to use when evaluating
+                      what Volcengine ENIs to use for IP allocation.
+                    type: object
                   instance-type:
                     description: InstanceType is the Volcengine ECS instance type,
-                      e.g. "ecs.g1.large"
+                      e.g. "ecs.g2ine.large"
                     type: string
+                  project-name:
+                    description: ProjectName is the project name to use for resource
+                      management.
+                    type: string
+                  security-group-tags:
+                    additionalProperties:
+                      type: string
+                    description: SecurityGroupTags is the list of tags to use when
+                      evaluating which security groups to use for the ENI.
+                    type: object
+                  security-groups:
+                    description: SecurityGroups is the list of security groups to
+                      attach to any ENI that is created and attached to the instance.
+                    items:
+                      type: string
+                    type: array
                   subnet-ids:
                     description: SubnetIDs is the list of subnet ids to use when evaluating
                       what Volcengine subnets to use for ENI and IP allocation.
@@ -734,8 +756,8 @@ spec:
                     items:
                       description: ENI represents an Volcengine Network Interface
                       properties:
-                        instance-id:
-                          description: InstanceID is the ID of the instance to which
+                        device-id:
+                          description: DeviceID is the ID of the instance to which
                             the ENI is attached
                           type: string
                         mac-address:
@@ -761,6 +783,10 @@ spec:
                                 type: string
                             type: object
                           type: array
+                        project-name:
+                          description: ProjectName is the project name the ENI belongs
+                            to
+                          type: string
                         security-group-ids:
                           description: SecurityGroupIDs is the list of security group
                             IDs associated with the ENI

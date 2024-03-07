@@ -14,7 +14,7 @@ import "github.com/cilium/cilium/pkg/ipam/types"
 // custom resource along with an ENI specification when the node registers
 // itself to the Kubernetes cluster.
 type Spec struct {
-	// InstanceType is the Volcengine ECS instance type, e.g. "ecs.g1.large"
+	// InstanceType is the Volcengine ECS instance type, e.g. "ecs.g2ine.large"
 	//
 	// +kubebuilder:validation:Optional
 	InstanceType string `json:"instance-type,omitempty"`
@@ -24,6 +24,11 @@ type Spec struct {
 	//
 	// +kubebuilder:validation:Optional
 	AvailabilityZone string `json:"availability-zone,omitempty"`
+
+	// ProjectName is the project name to use for resource management.
+	//
+	// +kubebuilder:validation:Optional
+	ProjectName string `json:"project-name,omitempty"`
 
 	// VPCID is the VPC ID to use when allocating ENIs.
 	//
@@ -46,13 +51,33 @@ type Spec struct {
 	//
 	// +kubebuilder:validation:Optional
 	SubnetTags map[string]string `json:"subnet-tags,omitempty"`
+
+	// ENITags is the list of tags to use when evaluating what Volcengine
+	// ENIs to use for IP allocation.
+	//
+	// +kubebuilder:validation:Optional
+	ENITags map[string]string `json:"eni-tags,omitempty"`
+
+	// SecurityGroups is the list of security groups to attach to any ENI
+	// that is created and attached to the instance.
+	//
+	// +kubebuilder:validation:Optional
+	SecurityGroups []string `json:"security-groups,omitempty"`
+
+	// SecurityGroupTags is the list of tags to use when evaluating which
+	// security groups to use for the ENI.
+	//
+	// +kubebuilder:validation:Optional
+	SecurityGroupTags map[string]string `json:"security-group-tags,omitempty"`
 }
+
+type ENIType string
 
 const (
 	// ENITypePrimary is the type for primary ENI
-	ENITypePrimary = "primary"
+	ENITypePrimary ENIType = "primary"
 	// ENITypeSecondary is the type for secondary ENI
-	ENITypeSecondary = "secondary"
+	ENITypeSecondary ENIType = "secondary"
 )
 
 // ENI represents an Volcengine Network Interface
@@ -60,8 +85,11 @@ type ENI struct {
 	// NetworkInterfaceID is the ENI ID
 	NetworkInterfaceID string `json:"network-interface-id,omitempty"`
 
+	// ProjectName is the project name the ENI belongs to
+	ProjectName string `json:"project-name,omitempty"`
+
 	// Type is the type of the ENI: Primary or Secondary
-	Type string `json:"type,omitempty"`
+	Type ENIType `json:"type,omitempty"`
 
 	// MACAddress is the MAC address of the ENI
 	MACAddress string `json:"mac-address,omitempty"`
@@ -81,8 +109,8 @@ type ENI struct {
 	// Subnet is the subnet to which the ENI is attached
 	Subnet Subnet `json:"subnet,omitempty"`
 
-	// InstanceID is the ID of the instance to which the ENI is attached
-	InstanceID string `json:"instance-id,omitempty"`
+	// DeviceID is the ID of the instance to which the ENI is attached
+	DeviceID string `json:"device-id,omitempty"`
 
 	// SecurityGroupIDs is the list of security group IDs associated with the ENI
 	SecurityGroupIds []string `json:"security-group-ids,omitempty"`

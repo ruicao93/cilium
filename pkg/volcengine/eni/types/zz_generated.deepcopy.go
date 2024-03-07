@@ -97,6 +97,25 @@ func (in *Spec) DeepCopyInto(out *Spec) {
 			(*out)[key] = val
 		}
 	}
+	if in.ENITags != nil {
+		in, out := &in.ENITags, &out.ENITags
+		*out = make(map[string]string, len(*in))
+		for key, val := range *in {
+			(*out)[key] = val
+		}
+	}
+	if in.SecurityGroups != nil {
+		in, out := &in.SecurityGroups, &out.SecurityGroups
+		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
+	if in.SecurityGroupTags != nil {
+		in, out := &in.SecurityGroupTags, &out.SecurityGroupTags
+		*out = make(map[string]string, len(*in))
+		for key, val := range *in {
+			(*out)[key] = val
+		}
+	}
 	return
 }
 

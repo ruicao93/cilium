@@ -18,6 +18,9 @@ func (in *ENI) DeepEqual(other *ENI) bool {
 	if in.NetworkInterfaceID != other.NetworkInterfaceID {
 		return false
 	}
+	if in.ProjectName != other.ProjectName {
+		return false
+	}
 	if in.Type != other.Type {
 		return false
 	}
@@ -55,7 +58,7 @@ func (in *ENI) DeepEqual(other *ENI) bool {
 		return false
 	}
 
-	if in.InstanceID != other.InstanceID {
+	if in.DeviceID != other.DeviceID {
 		return false
 	}
 	if ((in.SecurityGroupIds != nil) && (other.SecurityGroupIds != nil)) || ((in.SecurityGroupIds == nil) != (other.SecurityGroupIds == nil)) {
@@ -156,6 +159,9 @@ func (in *Spec) DeepEqual(other *Spec) bool {
 	if in.AvailabilityZone != other.AvailabilityZone {
 		return false
 	}
+	if in.ProjectName != other.ProjectName {
+		return false
+	}
 	if in.VPCID != other.VPCID {
 		return false
 	}
@@ -181,6 +187,65 @@ func (in *Spec) DeepEqual(other *Spec) bool {
 
 	if ((in.SubnetTags != nil) && (other.SubnetTags != nil)) || ((in.SubnetTags == nil) != (other.SubnetTags == nil)) {
 		in, other := &in.SubnetTags, &other.SubnetTags
+		if other == nil {
+			return false
+		}
+
+		if len(*in) != len(*other) {
+			return false
+		} else {
+			for key, inValue := range *in {
+				if otherValue, present := (*other)[key]; !present {
+					return false
+				} else {
+					if inValue != otherValue {
+						return false
+					}
+				}
+			}
+		}
+	}
+
+	if ((in.ENITags != nil) && (other.ENITags != nil)) || ((in.ENITags == nil) != (other.ENITags == nil)) {
+		in, other := &in.ENITags, &other.ENITags
+		if other == nil {
+			return false
+		}
+
+		if len(*in) != len(*other) {
+			return false
+		} else {
+			for key, inValue := range *in {
+				if otherValue, present := (*other)[key]; !present {
+					return false
+				} else {
+					if inValue != otherValue {
+						return false
+					}
+				}
+			}
+		}
+	}
+
+	if ((in.SecurityGroups != nil) && (other.SecurityGroups != nil)) || ((in.SecurityGroups == nil) != (other.SecurityGroups == nil)) {
+		in, other := &in.SecurityGroups, &other.SecurityGroups
+		if other == nil {
+			return false
+		}
+
+		if len(*in) != len(*other) {
+			return false
+		} else {
+			for i, inElement := range *in {
+				if inElement != (*other)[i] {
+					return false
+				}
+			}
+		}
+	}
+
+	if ((in.SecurityGroupTags != nil) && (other.SecurityGroupTags != nil)) || ((in.SecurityGroupTags == nil) != (other.SecurityGroupTags == nil)) {
+		in, other := &in.SecurityGroupTags, &other.SecurityGroupTags
 		if other == nil {
 			return false
 		}
