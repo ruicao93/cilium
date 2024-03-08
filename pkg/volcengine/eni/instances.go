@@ -6,6 +6,8 @@ package eni
 import (
 	"context"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/cilium/cilium/pkg/ipam"
 	ipamTypes "github.com/cilium/cilium/pkg/ipam/types"
 	v2 "github.com/cilium/cilium/pkg/k8s/apis/cilium.io/v2"
@@ -13,7 +15,6 @@ import (
 	"github.com/cilium/cilium/pkg/time"
 	eniTypes "github.com/cilium/cilium/pkg/volcengine/eni/types"
 	"github.com/cilium/cilium/pkg/volcengine/types"
-	"github.com/sirupsen/logrus"
 )
 
 type (
@@ -176,7 +177,7 @@ func (m *InstancesManager) resync(ctx context.Context, instanceID string) time.T
 			fieldInstanceID:     instanceID,
 			"numVPCs":           len(vpcs),
 			"numSubnets":        len(subnets),
-			"numsecurityGroups": len(securityGroups),
+			"numSecurityGroups": len(securityGroups),
 		}).Info("Synchronized ENI information for the corresponding instance")
 
 		m.mutex.Lock()
@@ -205,7 +206,7 @@ func (m *InstancesManager) UpdateENI(instanceID string, eni *eniTypes.ENI) {
 func (m *InstancesManager) ForeachInstance(instanceID string, fn ipamTypes.InterfaceIterator) {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
-	m.instances.ForeachInterface(instanceID, fn)
+	_ = m.instances.ForeachInterface(instanceID, fn)
 }
 
 func (m *InstancesManager) FindSuitableSubnet(spec eniTypes.Spec, toAllocate int) *ipamTypes.Subnet {

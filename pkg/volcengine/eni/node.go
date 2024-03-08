@@ -7,6 +7,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/cilium/cilium/pkg/defaults"
 	"github.com/cilium/cilium/pkg/ipam"
 	"github.com/cilium/cilium/pkg/ipam/stats"
@@ -17,7 +19,6 @@ import (
 	"github.com/cilium/cilium/pkg/volcengine/eni/limits"
 	eniTypes "github.com/cilium/cilium/pkg/volcengine/eni/types"
 	"github.com/cilium/cilium/pkg/volcengine/utils"
-	"github.com/sirupsen/logrus"
 )
 
 // The following error constants represent the error conditions for
@@ -76,6 +77,7 @@ func NewNode(node *ipam.Node, k8sObj *v2.CiliumNode, mgr *InstancesManager) *Nod
 	}
 }
 
+// lockAllFuncCalls will lock in the period of all input func callings.
 func (n *Node) lockAllFuncCalls(fs ...func()) func() {
 	n.mutex.Lock()
 	for i := range fs {
@@ -84,6 +86,7 @@ func (n *Node) lockAllFuncCalls(fs ...func()) func() {
 	return n.mutex.Unlock
 }
 
+// rLockAllFuncCalls like lockAllFuncCalls but use read-only lock in the period of all input func callings.
 func (n *Node) rLockAllFuncCalls(fs ...func()) func() {
 	n.mutex.RLock()
 	for i := range fs {
@@ -113,6 +116,7 @@ func (n *Node) PopulateStatusFields(resource *v2.CiliumNode) {
 		})
 }
 
+// backOffInOrder store back off funcs which will be called in order for operations back off
 func (n *Node) backOffInOrder(fs ...func() error) error {
 	for i := range fs {
 		if err := fs[i](); err != nil {
