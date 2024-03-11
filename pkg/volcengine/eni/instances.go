@@ -245,7 +245,7 @@ func (m *InstancesManager) FindSubnetByTags(vpcID, availabilityZone string, requ
 
 // FindSecurityGroupsByTags returns the security groups matching the provided VPC ID and security group IDs.
 func (m *InstancesManager) FindSecurityGroupsByIDs(vpcID string, securityGroupIDs []string) []*types.SecurityGroup {
-	var securityGroups []*types.SecurityGroup
+	securityGroups := make([]*types.SecurityGroup, 0, len(securityGroupIDs))
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 
