@@ -18,6 +18,7 @@ generators=(
     "operator/cilium-operator-azure --cmdref"
     "operator/cilium-operator-generic --cmdref"
     "operator/cilium-operator-alibabacloud --cmdref"
+    "operator/cilium-operator-volcengine --cmdref"
 )
 
 for g in "${generators[@]}" ; do

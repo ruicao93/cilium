@@ -745,6 +745,22 @@ func (a *crdAllocator) buildAllocationResult(ip net.IP, ipInfo *ipamTypes.Alloca
 			return
 		}
 		return nil, fmt.Errorf("unable to find ENI %s", ipInfo.Resource)
+	case ipamOption.IPAMVolcengine:
+		for _, eni := range a.store.ownNode.Status.Volcengine.ENIS {
+			if eni.NetworkInterfaceID != ipInfo.Resource {
+				continue
+			}
+			result.PrimaryMAC = eni.MACAddress
+			result.CIDRs = []string{eni.Subnet.CIDRBlock}
+			if a.conf.GetIPv4NativeRoutingCIDR() != nil {
+				result.CIDRs = append(result.CIDRs, a.conf.GetIPv4NativeRoutingCIDR().String())
+			}
+			// TODO: Get gateway IP from metadata.
+			// result.GatewayIP = metadata.GetGatewayIP()
+			// TODO: Set InterfaceNumber from ENI.
+			// result.InterfaceNumber = strconv.Itoa(eni.InterfaceNumber)
+			return
+		}
 	}
 
 	return

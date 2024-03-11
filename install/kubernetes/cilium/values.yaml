@@ -145,9 +145,9 @@ rollOutCiliumPods: false
 # -- Agent container image.
 image:
   override: ~
-  repository: "quay.io/cilium/cilium"
-  tag: "v1.15.1"
-  pullPolicy: "IfNotPresent"
+  repository: "cr-norm-cn-beijing.cr.volces.com/cilium/cilium-dev"
+  tag: "latest"
+  pullPolicy: "Always"
   # cilium-digest
   digest: ""
   useDigest: false
@@ -357,6 +357,10 @@ azure:
 
 alibabacloud:
   # -- Enable AlibabaCloud ENI integration
+  enabled: false
+
+volcengine:
+  # -- Enable Volcengine ENI integration
   enabled: false
 
 # -- Enable bandwidth manager to optimize TCP and UDP workloads and allow
@@ -2471,8 +2475,8 @@ operator:
   # -- cilium-operator image.
   image:
     override: ~
-    repository: "quay.io/cilium/operator"
-    tag: "v1.15.1"
+    repository: "cr-norm-cn-beijing.cr.volces.com/cilium/operator"
+    tag: "latest"
     # operator-generic-digest
     genericDigest: ""
     # operator-azure-digest
@@ -2766,8 +2770,8 @@ preflight:
   # -- Cilium pre-flight image.
   image:
     override: ~
-    repository: "quay.io/cilium/cilium"
-    tag: "v1.15.1"
+    repository: "cr-norm-cn-beijing.cr.volces.com/cilium/cilium-dev"
+    tag: "latest"
     # cilium-digest
     digest: ""
     useDigest: false
