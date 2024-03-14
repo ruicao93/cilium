@@ -223,6 +223,26 @@ const (
 	// the number of API calls to AlibabaCloud ECS service.
 	AlibabaCloudReleaseExcessIPs = "alibaba-cloud-release-excess-ips"
 
+	// Volcengine options
+
+	// ENIGCTags is a tag that will be added to every ENI
+	// created by the Volcengine ENI IPAM.
+	// Any stale and unattached ENIs with this tag will be garbage
+	// collected by the operator.
+	ENIGCTags = "eni-gc-tags"
+
+	// ENIGCInterval defines the interval of ENI GC
+	ENIGCInterval = "eni-gc-interval"
+
+	// VolcengineVPCID allows user to specific vpc
+	VolcengineVPCID = "volcengine-cloud-vpc-id"
+
+	// VolcengineReleaseExcessIPs allows releasing excess free IP addresses from ENI.
+	// Enabling this option reduces waste of IP addresses but may increase
+	// the number of API calls to AlibabaCloud ECS service.
+	VolcengineReleaseExcessIPs = "volcengine-cloud-release-excess-ips"
+	//volcengine-release-excess-ips
+
 	// LoadBalancerL7 enables loadbalancer capabilities for services via envoy proxy
 	LoadBalancerL7 = "loadbalancer-l7"
 
@@ -427,6 +447,25 @@ type OperatorConfig struct {
 	// the number of API calls to AlibabaCloud ECS service.
 	AlibabaCloudReleaseExcessIPs bool
 
+	// Volcengine options
+
+	// ENIGCTags is a tag that will be added to every ENI
+	// created by the Volcengine ENI IPAM.
+	// Any stale and unattached ENIs with this tag will be garbage
+	// collected by the operator.
+	ENIGCTags map[string]string
+
+	// ENIGCInterval defines the interval of ENI GC
+	ENIGCInterval time.Duration
+
+	// VolcengineVPCID allow user to specific vpc
+	VolcengineVPCID string
+
+	// VolcengineReleaseExcessIPs allows releasing excess free IP addresses from ENI.
+	// Enabling this option reduces waste of IP addresses but may increase
+	// the number of API calls to Volcengine EC2 service.
+	VolcengineReleaseExcessIPs bool
+
 	// LoadBalancerL7 enables loadbalancer capabilities for services.
 	LoadBalancerL7 string
 
@@ -541,6 +580,11 @@ func (c *OperatorConfig) Populate(vp *viper.Viper) {
 	c.AlibabaCloudVPCID = vp.GetString(AlibabaCloudVPCID)
 	c.AlibabaCloudReleaseExcessIPs = vp.GetBool(AlibabaCloudReleaseExcessIPs)
 
+	// Volcengine options
+	c.VolcengineVPCID = vp.GetString(VolcengineVPCID)
+	c.VolcengineReleaseExcessIPs = vp.GetBool(VolcengineReleaseExcessIPs)
+	c.ENIGCInterval = vp.GetDuration(ENIGCInterval)
+
 	// Option maps and slices
 
 	if m := vp.GetStringSlice(IPAMSubnetsIDs); len(m) != 0 {
@@ -577,6 +621,12 @@ func (c *OperatorConfig) Populate(vp *viper.Viper) {
 		c.ENIGarbageCollectionTags = m
 	}
 
+	if m, err := command.GetStringMapStringE(vp, ENIGCTags); err != nil {
+		log.Fatalf("unable to parse %s: %s", ENIGCTags, err)
+	} else {
+		c.ENIGCTags = m
+	}
+
 	if m, err := command.GetStringMapStringE(vp, IPAMAutoCreateCiliumPodIPPools); err != nil {
 		log.Fatalf("unable to parse %s: %s", IPAMAutoCreateCiliumPodIPPools, err)
 	} else {
@@ -593,4 +643,6 @@ var Config = &OperatorConfig{
 	AWSInstanceLimitMapping:        make(map[string]string),
 	ENITags:                        make(map[string]string),
 	ENIGarbageCollectionTags:       make(map[string]string),
+
+	ENIGCTags: make(map[string]string),
 }
