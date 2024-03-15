@@ -34,8 +34,8 @@ type AllocatorVolcengine struct {
 
 func (a *AllocatorVolcengine) buildENIGarbageCollectionTags(ctx context.Context, cfg *operatorOption.OperatorConfig) {
 	// Use user-provided tags if available
-	if len(cfg.ENIGCTags) != 0 {
-		a.eniGCTags = cfg.ENIGCTags
+	if len(cfg.VolcengineENIGCTags) != 0 {
+		a.eniGCTags = cfg.VolcengineENIGCTags
 		return
 	}
 
@@ -49,6 +49,7 @@ func (a *AllocatorVolcengine) buildENIGarbageCollectionTags(ctx context.Context,
 	if clusterName := option.Config.ClusterName; clusterName != defaults.ClusterName {
 		a.eniGCTags[defaults.ENIGarbageCollectionTagClusterName] = clusterName
 	}
+	// TODO:determine cluster tag if cluster-name not set
 }
 
 // Init sets up ENI limits based on given options
@@ -105,7 +106,7 @@ func (a *AllocatorVolcengine) Start(ctx context.Context, getterUpdater ipam.Cili
 		return nil, fmt.Errorf("unable to initialize Volcengine node manager: %w", err)
 	}
 
-	if cfg.ENIGCInterval > 0 {
+	if cfg.VolcengineENIGCInterval > 0 {
 		eni.StartENIGarbageCollector(ctx, a.client, eni.GarbageCollectionParams{
 			RunInterval:    cfg.EndpointGCInterval,
 			MaxPerInterval: defaults.ENIGarbageCollectionMaxPerInterval,

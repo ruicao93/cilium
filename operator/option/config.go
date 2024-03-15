@@ -225,14 +225,14 @@ const (
 
 	// Volcengine options
 
-	// ENIGCTags is a tag that will be added to every ENI
+	// VolcengineENIGCTags is a tag that will be added to every ENI
 	// created by the Volcengine ENI IPAM.
 	// Any stale and unattached ENIs with this tag will be garbage
 	// collected by the operator.
-	ENIGCTags = "eni-gc-tags"
+	VolcengineENIGCTags = "eni-gc-tags"
 
-	// ENIGCInterval defines the interval of ENI GC
-	ENIGCInterval = "eni-gc-interval"
+	// VolcengineENIGCInterval defines the interval of ENI GC
+	VolcengineENIGCInterval = "eni-gc-interval"
 
 	// VolcengineVPCID allows user to specific vpc
 	VolcengineVPCID = "volcengine-cloud-vpc-id"
@@ -449,14 +449,14 @@ type OperatorConfig struct {
 
 	// Volcengine options
 
-	// ENIGCTags is a tag that will be added to every ENI
+	// VolcengineENIGCTags is a tag that will be added to every ENI
 	// created by the Volcengine ENI IPAM.
 	// Any stale and unattached ENIs with this tag will be garbage
 	// collected by the operator.
-	ENIGCTags map[string]string
+	VolcengineENIGCTags map[string]string
 
-	// ENIGCInterval defines the interval of ENI GC
-	ENIGCInterval time.Duration
+	// VolcengineENIGCInterval defines the interval of ENI GC
+	VolcengineENIGCInterval time.Duration
 
 	// VolcengineVPCID allow user to specific vpc
 	VolcengineVPCID string
@@ -583,7 +583,7 @@ func (c *OperatorConfig) Populate(vp *viper.Viper) {
 	// Volcengine options
 	c.VolcengineVPCID = vp.GetString(VolcengineVPCID)
 	c.VolcengineReleaseExcessIPs = vp.GetBool(VolcengineReleaseExcessIPs)
-	c.ENIGCInterval = vp.GetDuration(ENIGCInterval)
+	c.VolcengineENIGCInterval = vp.GetDuration(VolcengineENIGCInterval)
 
 	// Option maps and slices
 
@@ -621,10 +621,10 @@ func (c *OperatorConfig) Populate(vp *viper.Viper) {
 		c.ENIGarbageCollectionTags = m
 	}
 
-	if m, err := command.GetStringMapStringE(vp, ENIGCTags); err != nil {
-		log.Fatalf("unable to parse %s: %s", ENIGCTags, err)
+	if m, err := command.GetStringMapStringE(vp, VolcengineENIGCTags); err != nil {
+		log.Fatalf("unable to parse %s: %s", VolcengineENIGCTags, err)
 	} else {
-		c.ENIGCTags = m
+		c.VolcengineENIGCTags = m
 	}
 
 	if m, err := command.GetStringMapStringE(vp, IPAMAutoCreateCiliumPodIPPools); err != nil {
@@ -644,5 +644,5 @@ var Config = &OperatorConfig{
 	ENITags:                        make(map[string]string),
 	ENIGarbageCollectionTags:       make(map[string]string),
 
-	ENIGCTags: make(map[string]string),
+	VolcengineENIGCTags: make(map[string]string),
 }
