@@ -636,6 +636,8 @@ type crdAllocator struct {
 	family Family
 
 	conf Configuration
+
+	volengineMetadata *volcengineAPI.Metadata
 }
 
 // newCRDAllocator creates a new CRD-backed IP allocator
@@ -649,6 +651,9 @@ func newCRDAllocator(family Family, c Configuration, owner Owner, clientset clie
 		family:    family,
 		store:     sharedNodeStore,
 		conf:      c,
+	}
+	if c.IPAMMode() == ipamOption.IPAMVolcengine {
+		allocator.volengineMetadata = volcengineAPI.NewMetadata()
 	}
 
 	sharedNodeStore.addAllocator(allocator)
@@ -757,7 +762,7 @@ func (a *crdAllocator) buildAllocationResult(ip net.IP, ipInfo *ipamTypes.Alloca
 			if a.conf.GetIPv4NativeRoutingCIDR() != nil {
 				result.CIDRs = append(result.CIDRs, a.conf.GetIPv4NativeRoutingCIDR().String())
 			}
-			metadata := volcengineAPI.NewMetadata()
+			metadata := a.volengineMetadata
 			result.GatewayIP, err = metadata.GatewayIP(context.TODO(), eni.MACAddress)
 			if err != nil {
 				return nil, fmt.Errorf("failed to get gateway IP by MAC: %s: %w", eni.MACAddress, err)
