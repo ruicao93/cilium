@@ -16,7 +16,7 @@ cilium-operator-generic: GO_TAGS_FLAGS+=ipam_provider_operator
 cilium-operator-aws: GO_TAGS_FLAGS+=ipam_provider_aws
 cilium-operator-azure: GO_TAGS_FLAGS+=ipam_provider_azure
 cilium-operator-alibabacloud: GO_TAGS_FLAGS+=ipam_provider_alibabacloud
-cilium-operator-alibabacloud: GO_TAGS_FLAGS+=ipam_provider_volcengine
+cilium-operator-volcengine: GO_TAGS_FLAGS+=ipam_provider_volcengine
 
 $(TARGETS):
 	@$(ECHO_GO)
