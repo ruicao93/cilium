@@ -35,6 +35,8 @@ import (
 	"github.com/cilium/cilium/pkg/option"
 	"github.com/cilium/cilium/pkg/time"
 	"github.com/cilium/cilium/pkg/trigger"
+	volcengineAPI "github.com/cilium/cilium/pkg/volcengine/api"
+	volcengine "github.com/cilium/cilium/pkg/volcengine/utils"
 )
 
 var (
@@ -745,6 +747,24 @@ func (a *crdAllocator) buildAllocationResult(ip net.IP, ipInfo *ipamTypes.Alloca
 			return
 		}
 		return nil, fmt.Errorf("unable to find ENI %s", ipInfo.Resource)
+	case ipamOption.IPAMVolcengine:
+		for _, eni := range a.store.ownNode.Status.Volcengine.ENIS {
+			if eni.NetworkInterfaceID != ipInfo.Resource {
+				continue
+			}
+			result.PrimaryMAC = eni.MACAddress
+			result.CIDRs = []string{eni.Subnet.CIDRBlock}
+			if a.conf.GetIPv4NativeRoutingCIDR() != nil {
+				result.CIDRs = append(result.CIDRs, a.conf.GetIPv4NativeRoutingCIDR().String())
+			}
+			metadata := volcengineAPI.NewMetadata()
+			result.GatewayIP, err = metadata.GatewayIP(context.TODO(), eni.MACAddress)
+			if err != nil {
+				return nil, fmt.Errorf("failed to get gateway IP by MAC: %s: %w", eni.MACAddress, err)
+			}
+			result.InterfaceNumber = strconv.Itoa(volcengine.GetENIIndexFromTags(eni.Tags))
+			return
+		}
 	}
 
 	return
