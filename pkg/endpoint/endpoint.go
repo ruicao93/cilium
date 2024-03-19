@@ -2386,7 +2386,7 @@ func (e *Endpoint) Delete(conf DeleteConfig) []error {
 		}
 	}
 
-	if option.Config.IPAM == ipamOption.IPAMENI || option.Config.IPAM == ipamOption.IPAMAzure || option.Config.IPAM == ipamOption.IPAMAlibabaCloud {
+	if ipamOption.IsSupportedIPAMCRDMode(option.Config.IPAM) {
 		e.getLogger().WithFields(logrus.Fields{
 			"ep":     e.GetID(),
 			"ipAddr": e.GetIPv4Address(),
