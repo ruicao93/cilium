@@ -17,9 +17,6 @@ import (
 	"strings"
 	"sync/atomic"
 
-	"github.com/sirupsen/logrus"
-	k8sTypes "k8s.io/apimachinery/pkg/types"
-
 	"github.com/cilium/cilium/api/v1/models"
 	"github.com/cilium/cilium/pkg/annotation"
 	"github.com/cilium/cilium/pkg/completion"
@@ -58,6 +55,8 @@ import (
 	"github.com/cilium/cilium/pkg/time"
 	"github.com/cilium/cilium/pkg/trigger"
 	"github.com/cilium/cilium/pkg/types"
+	"github.com/sirupsen/logrus"
+	k8sTypes "k8s.io/apimachinery/pkg/types"
 )
 
 const (
@@ -2386,7 +2385,7 @@ func (e *Endpoint) Delete(conf DeleteConfig) []error {
 		}
 	}
 
-	if ipamOption.IsSupportedIPAMCRDMode(option.Config.IPAM) {
+	if ipamOption.IsCloudIPAMMode(option.Config.IPAM) {
 		e.getLogger().WithFields(logrus.Fields{
 			"ep":     e.GetID(),
 			"ipAddr": e.GetIPv4Address(),
