@@ -188,7 +188,8 @@ func (c *Client) DeleteNetworkInterface(ctx context.Context, eniID string) error
 	return c.deleteNetworkInterface(ctx, eniID)
 }
 
-func (c *Client) GetDetachedNetworkInterface(ctx context.Context, tags ipamTypes.Tags, maxInterval time.Duration) ([]string, error) {
+// GetDetachedNetworkInterfaces returns all available interfaces that exceeds maxInterval since last updated time.
+func (c *Client) GetDetachedNetworkInterfaces(ctx context.Context, tags ipamTypes.Tags, maxInterval time.Duration) ([]string, error) {
 	interfaces, err := c.describeInterfaces(ctx, NewInterfaceTagFilters(tags))
 	if err != nil {
 		return nil, fmt.Errorf("failed to describe detached interfaces, err %v", err)
