@@ -38,8 +38,8 @@ func UpdateFromAPI(ctx context.Context, client *api.Client) error {
 		return err
 	}
 
-	limits.RLock()
-	defer limits.RUnlock()
+	limits.Lock()
+	defer limits.Unlock()
 	maps.Copy(limits.m, list)
 
 	return nil
