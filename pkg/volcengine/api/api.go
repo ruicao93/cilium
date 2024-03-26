@@ -436,10 +436,10 @@ func (c *Client) describeSubnets(ctx context.Context) ([]*vpc.SubnetForDescribeS
 func (c *Client) describeInterfaceByInstanceId(ctx context.Context, instanceID string) ([]*vpc.NetworkInterfaceSetForDescribeNetworkInterfacesOutput, error) {
 	result := make([]*vpc.NetworkInterfaceSetForDescribeNetworkInterfacesOutput, 0, 10)
 	input := &vpc.DescribeNetworkInterfacesInput{
-		InstanceId:  volcengine.String(instanceID),
-		MaxResults:  volcengine.Int64(100),
-		ProjectName: volcengine.String(c.projectName),
-		TagFilters:  c.eniTagFilters,
+		InstanceId: volcengine.String(instanceID),
+		MaxResults: volcengine.Int64(100),
+		//ProjectName: volcengine.String(c.projectName),
+		TagFilters: c.eniTagFilters,
 	}
 	c.limiter.Limit(ctx, "DescribeNetworkInterfaces")
 	resp, err := c.vpcClient.DescribeNetworkInterfaces(input)
@@ -470,9 +470,9 @@ func (c *Client) describeInterfacesOfInstances(ctx context.Context) ([]*vpc.Netw
 	results := make([]*vpc.NetworkInterfaceSetForDescribeNetworkInterfacesOutput, 0, 100)
 
 	input := &ecs.DescribeInstancesInput{
-		ProjectName: volcengine.String(c.projectName),
-		TagFilters:  c.ecsTagFilters,
-		MaxResults:  volcengine.Int32(100),
+		//ProjectName: volcengine.String(c.projectName),
+		TagFilters: c.ecsTagFilters,
+		MaxResults: volcengine.Int32(100),
 	}
 	c.limiter.Limit(ctx, "DescribeInstances")
 	resp, err := c.ecsClient.DescribeInstances(input)
@@ -509,9 +509,9 @@ func (c *Client) describeInterfacesOfInstances(ctx context.Context) ([]*vpc.Netw
 func (c *Client) describeInterfaces(ctx context.Context) ([]*vpc.NetworkInterfaceSetForDescribeNetworkInterfacesOutput, error) {
 	results := make([]*vpc.NetworkInterfaceSetForDescribeNetworkInterfacesOutput, 0, 100)
 	input := &vpc.DescribeNetworkInterfacesInput{
-		MaxResults:  volcengine.Int64(100),
-		ProjectName: volcengine.String(c.projectName),
-		TagFilters:  c.eniTagFilters,
+		MaxResults: volcengine.Int64(100),
+		//ProjectName: volcengine.String(c.projectName),
+		TagFilters: c.eniTagFilters,
 	}
 	c.limiter.Limit(ctx, "DescribeNetworkInterfaces")
 	resp, err := c.vpcClient.DescribeNetworkInterfaces(input)
@@ -540,8 +540,8 @@ func (c *Client) describeInterfaces(ctx context.Context) ([]*vpc.NetworkInterfac
 func (c *Client) describeVPCs(ctx context.Context) ([]*vpc.VpcForDescribeVpcsOutput, error) {
 	result := make([]*vpc.VpcForDescribeVpcsOutput, 0)
 	input := &vpc.DescribeVpcsInput{
-		MaxResults:  volcengine.Int64(100),
-		ProjectName: volcengine.String(c.projectName),
+		MaxResults: volcengine.Int64(100),
+		//ProjectName: volcengine.String(c.projectName),
 	}
 	c.limiter.Limit(ctx, "DescribeVpcs")
 	resp, err := c.vpcClient.DescribeVpcs(input)
